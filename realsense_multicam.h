@@ -45,5 +45,5 @@ namespace Realsense {
     }
 
     CameraConfig loadConfig(const std::string& path);
-    
+
 } // namespace Realsense 
