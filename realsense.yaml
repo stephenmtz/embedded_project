@@ -1,0 +1,9 @@
+camera:
+  sync:
+    inter_cam_sync_mode: 3   
+
+  resolution:
+    width: 1280
+    height: 720
+
+  fps: 30
