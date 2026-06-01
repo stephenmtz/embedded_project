@@ -1,0 +1,10 @@
+**/build/
+**/CMakeFiles/
+**/*.o
+**/*.a
+benchmarks/results/
+.git/
+*.md
+nodes/inference_node/
+librealsense/
+librealsense_dist/
