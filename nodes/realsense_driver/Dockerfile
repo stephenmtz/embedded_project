@@ -31,8 +31,10 @@ COPY middleware/                      /app/middleware/
 COPY nodes/realsense_driver/          /app/node/
 COPY config/realsense_intrinsics.yaml /app/config/realsense_intrinsics.yaml
 
-RUN cmake -S /app/node -B /app/node/build \
+RUN PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
+    cmake -S /app/node -B /app/node/build \
       -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_PREFIX_PATH=/usr/local \
     && cmake --build /app/node/build --parallel $(nproc)
 
 CMD ["/app/node/build/realsense_driver"]
