@@ -3,17 +3,26 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    curl ca-certificates gnupg build-essential cmake pkg-config \
-    && mkdir -p /etc/apt/keyrings \
-    && curl -sSf https://librealsense.intel.com/Debian/librealsense.pgp \
-       | gpg --dearmor \
-       | tee /etc/apt/keyrings/librealsense.gpg > /dev/null \
-    && echo "deb [signed-by=/etc/apt/keyrings/librealsense.gpg] https://librealsense.intel.com/Debian/apt-repo jammy main" \
-       > /etc/apt/sources.list.d/librealsense.list \
-    && apt-get update && apt-get install -y \
-       librealsense2-dev \
-       librealsense2-utils \
+    build-essential cmake git \
+    libssl-dev libusb-1.0-0-dev libudev-dev \
+    libv4l-dev pkg-config \
     && rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/IntelRealSense/librealsense.git \
+      --depth 1 --branch v2.55.1 /opt/librealsense \
+    && cmake -S /opt/librealsense -B /opt/librealsense/build \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DFORCE_RSUSB_BACKEND=OFF \
+      -DBUILD_EXAMPLES=OFF \
+      -DBUILD_GRAPHICAL_EXAMPLES=OFF \
+      -DBUILD_PYTHON_BINDINGS=OFF \
+      -DBUILD_PCAP=OFF \
+      -DCMAKE_INSTALL_PREFIX=/usr/local \
+    && cmake --build /opt/librealsense/build --parallel $(nproc) \
+    && cmake --install /opt/librealsense/build \
+    && rm -rf /opt/librealsense
+
+RUN ldconfig
 
 WORKDIR /app
 
