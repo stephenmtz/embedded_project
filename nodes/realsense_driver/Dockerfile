@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     build-essential cmake git \
     libssl-dev libusb-1.0-0-dev libudev-dev \
     libv4l-dev pkg-config \
+    flatbuffers-compiler libflatbuffers-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/IntelRealSense/librealsense.git \
@@ -28,12 +29,13 @@ WORKDIR /app
 
 COPY msgs/                            /app/msgs/
 COPY middleware/                      /app/middleware/
-COPY nodes/realsense_driver/          /app/node/
+COPY nodes/realsense_driver/          /app/nodes/realsense_driver/
 COPY config/realsense_intrinsics.yaml /app/config/realsense_intrinsics.yaml
+COPY CMakeLists.txt                   /app/CMakeLists.txt
 
-RUN cmake -S /app/node -B /app/node/build \
+RUN cmake -S /app -B /app/build \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_PREFIX_PATH=/usr/local/lib/cmake/realsense2 \
-    && cmake --build /app/node/build --parallel $(nproc)
+    && cmake --build /app/build --parallel $(nproc)
 
-CMD ["/app/node/build/realsense_driver"]
+CMD ["/app/build/nodes/realsense_driver/realsense_driver"]
