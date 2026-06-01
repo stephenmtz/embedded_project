@@ -3,14 +3,16 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    software-properties-common curl ca-certificates \
+    curl ca-certificates gnupg build-essential cmake pkg-config \
+    && mkdir -p /etc/apt/keyrings \
     && curl -sSf https://librealsense.intel.com/Debian/librealsense.pgp \
-       | apt-key add - \
-    && add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo jammy main" \
+       | gpg --dearmor \
+       | tee /etc/apt/keyrings/librealsense.gpg > /dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/librealsense.gpg] https://librealsense.intel.com/Debian/apt-repo jammy main" \
+       > /etc/apt/sources.list.d/librealsense.list \
     && apt-get update && apt-get install -y \
        librealsense2-dev \
        librealsense2-utils \
-       build-essential cmake pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
