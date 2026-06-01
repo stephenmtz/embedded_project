@@ -1,2 +1,22 @@
-namespace realsense.rgb;
+namespace Realsense.Rgb;
 
+enum PixelFormat : uint8 {
+    UNKNOWN = 0,
+    BGR8 = 1,
+    RGB8 = 2,
+    YUY2 = 3
+}
+
+table Realsense { 
+    data:[uint8];
+    width:uint32; 
+    height:uint32;
+    timestamp:uint64; 
+    camera_id:uint32; 
+    format:PixelFormat; 
+    frame_number:uint64; 
+}
+
+root_type Realsense;
+
+// For future ref: flatbuffers.dev/schema/
