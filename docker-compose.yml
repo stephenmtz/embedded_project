@@ -1,5 +1,3 @@
-version: "3.9"
-
 x-base: &base
   restart: unless-stopped
   network_mode: host
@@ -40,4 +38,3 @@ services:
       - RS_WIDTH=1280
       - RS_HEIGHT=720
       - RS_FPS=30
-      
